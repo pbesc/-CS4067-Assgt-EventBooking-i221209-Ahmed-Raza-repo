@@ -1,5 +1,6 @@
 const express = require("express");
 const Event = require("../models/Event");
+const axios = require("axios");
 
 const router = express.Router();
 
@@ -59,4 +60,25 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.get("/:id/availability", async (req, res) => {
+  try {
+      const event = await Event.findById(req.params.id);
+      if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+      }
+
+      // Mocking event capacity (Assuming each event has max 100 bookings)
+      const maxCapacity = 100;
+
+      // Count existing bookings for this event
+      const response = await axios.get(`http://localhost:5002/api/bookings`);
+      const bookings = response.data.filter(booking => booking.eventId === req.params.id);
+
+      const availableSpots = maxCapacity - bookings.length;
+
+      res.status(200).json({ eventId: req.params.id, availableSpots });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router;

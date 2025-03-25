@@ -13,6 +13,11 @@ app.use(express.json());
 // Connect to Database
 connectDB();
 
+// Default Route (Fix for "Cannot GET /")
+app.get("/", (req, res) => {
+    res.send("Event Service is running!");
+});
+
 // Routes
 app.use("/api/events", eventRoutes);
 
