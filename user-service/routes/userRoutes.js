@@ -78,4 +78,14 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// ✅ Get all users
+router.get("/", async (req, res) => {
+    try {
+        const users = await User.find(); // Fetch all users from MongoDB
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

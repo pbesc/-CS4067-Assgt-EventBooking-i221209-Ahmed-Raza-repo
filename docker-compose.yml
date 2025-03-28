@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+
+  user-service:
+    build: ./user-service
+    container_name: user-service-container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./user-service/.env
+
+  booking-service:
+    build: ./booking-service
+    container_name: booking-service-container
+    ports:
+      - "5002:5002"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./booking-service/.env
+
+  event-service:
+    build: ./event-service
+    container_name: event-service-container
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./event-service/.env
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service-container
+    ports:
+      - "5003:5003"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./notification-service/.env
+
+  event-booking-frontend:
+    build: ./event-booking-frontend
+    container_name: frontend-container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - booking-service
+      - event-service
+      - notification-service
+
